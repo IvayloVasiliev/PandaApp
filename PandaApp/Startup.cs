@@ -33,36 +33,43 @@ namespace PandaApp
             services.AddDbContext<PandaDbContext>(options =>
             options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<PandaUser, PandaUserRole>()
                 .AddEntityFrameworkStores<PandaDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequiredUniqueChars = 0;
+
+                options.User.RequireUniqueEmail = true;
+            });
+
+                services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Error");
-            //    app.UseHsts();
-            //}
+            using (var context = new PandaDbContext())
+            {
+                context.Database.EnsureCreated();
+            }
 
+            //app.ApplicationServices.GetRequiredService<PandaDbContext>()
+            //    .Database.EnsureCreated();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //app.UseCookiePolicy();
             app.UseDeveloperExceptionPage();
 
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-
-            //app.UseMvc();
         }
     }
 }
