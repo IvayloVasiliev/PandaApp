@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using Panda.Domain;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PandaApp.Areas.Identity.Pages.Account
@@ -13,19 +15,21 @@ namespace PandaApp.Areas.Identity.Pages.Account
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<PandaUser> _signInManager;
+        private readonly RoleManager<PandaUserRole> _roleManager;
         private readonly UserManager<PandaUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
        
 
         public RegisterModel(
             UserManager<PandaUser> userManager,
+            RoleManager<PandaUserRole> roleManager,
             SignInManager<PandaUser> signInManager,
             ILogger<RegisterModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-           
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -65,8 +69,18 @@ namespace PandaApp.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new PandaUser { UserName = Input.Username, Email = Input.Email };
+                var user = new PandaUser { UserName = Input.Username, Email = Input.Email }; 
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
+                if (_userManager.Users.Count() == 1)
+                {
+                    await _userManager.AddToRoleAsync(user, "Admin");
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
+                }
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

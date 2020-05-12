@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using Panda.Domain;
 using PandaApp.Data;
 
@@ -56,10 +51,16 @@ namespace PandaApp
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            using (var context = new PandaDbContext())
-            {
-                context.Database.EnsureCreated();
-            }
+            //using (var context = new PandaDbContext())
+            //{
+            //    context.Database.EnsureCreated();
+            //    if (!context.Roles.Any())
+            //    {
+            //        context.Add(new PandaUserRole { Name = "Admin" });
+            //        context.Add(new PandaUserRole { Name = "User" });
+            //        context.SaveChanges();
+            //    }
+            //}
 
             //app.ApplicationServices.GetRequiredService<PandaDbContext>()
             //    .Database.EnsureCreated();
