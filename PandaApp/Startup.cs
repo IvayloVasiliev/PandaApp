@@ -62,8 +62,21 @@ namespace PandaApp
             //    }
             //}
 
-            //app.ApplicationServices.GetRequiredService<PandaDbContext>()
-            //    .Database.EnsureCreated();
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetRequiredService<PandaDbContext>())
+                {
+                    context.Database.Migrate();
+
+                    if (!context.Roles.Any())
+                    {
+                        context.Roles.Add(new PandaUserRole { Name = "Admin", NormalizedName = "ADMIN" });
+                        context.Roles.Add(new PandaUserRole { Name = "User", NormalizedName = "USER" });
+                    }
+
+                    context.SaveChanges();
+                }
+            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
