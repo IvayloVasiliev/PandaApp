@@ -6,6 +6,11 @@ namespace PandaApp.Data
 {
     public class PandaDbContext : IdentityDbContext<PandaUser, PandaUserRole, string>
     {
+
+        public DbSet<Package> Packages { get; set; }
+        public DbSet<Receipt> Receipts { get; set; }
+        public DbSet<PackageStatus> PackageStatus { get; set; }
+
         public PandaDbContext()
         {
 

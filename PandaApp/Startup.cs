@@ -74,6 +74,14 @@ namespace PandaApp
                         context.Roles.Add(new PandaUserRole { Name = "User", NormalizedName = "USER" });
                     }
 
+                    if (!context.PackageStatus.Any())
+                    {
+                        context.PackageStatus.Add(new PackageStatus {Name = "Pending" });
+                        context.PackageStatus.Add(new PackageStatus {Name = "Shipped" });
+                        context.PackageStatus.Add(new PackageStatus {Name = "Delivered" });
+                        context.PackageStatus.Add(new PackageStatus {Name = "Acquired" });
+                    }
+
                     context.SaveChanges();
                 }
             }
