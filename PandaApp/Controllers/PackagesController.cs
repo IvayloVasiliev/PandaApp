@@ -18,7 +18,7 @@ namespace PandaApp.Controllers
             this.context = context;
         }
 
-       // [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             this.ViewData["Recipients"] = this.context.Users.ToList();
@@ -37,7 +37,7 @@ namespace PandaApp.Controllers
                 Weight = bindingModel.Weight,
                 Status = this.context.PackageStatus
                 .SingleOrDefault(status => status.Name == "Pending")
-            
+
             };
 
             this.context.Packages.Add(package);
@@ -84,7 +84,7 @@ namespace PandaApp.Controllers
         [HttpGet("Packages/Shipped/{Id}")]
         public IActionResult Ship(string id)
         {
-           Package package = this.context.Packages.Find(id);
+            Package package = this.context.Packages.Find(id);
 
             package.Status = this.context.PackageStatus.SingleOrDefault(status => status.Name == "Shipped");
             package.EstimatedDeliveryDate = DateTime.Now.AddDays(new Random().Next(20, 40));
@@ -114,11 +114,18 @@ namespace PandaApp.Controllers
             package.Status = this.context.PackageStatus.SingleOrDefault(status => status.Name == "Acquired");
             this.context.Update(package);
 
-            //TODO: Receipt
+            Receipt receipt = new Receipt
+            {
+                Fee = (decimal)(2.67 * package.Weight),
+                IssuedOn = DateTime.Now,
+                Package = package,
+                Recipient = context.Users.FirstOrDefault(user => user.UserName == this.User.Identity.Name)
+            };
 
+            this.context.Receipts.Add(receipt);
             this.context.SaveChanges();
 
-            return this.Redirect("/Packages/Delivered");
+            return this.Redirect("/Home/Index");
         }
 
         [HttpGet]

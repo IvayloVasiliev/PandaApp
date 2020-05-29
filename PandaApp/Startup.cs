@@ -51,16 +51,6 @@ namespace PandaApp
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //using (var context = new PandaDbContext())
-            //{
-            //    context.Database.EnsureCreated();
-            //    if (!context.Roles.Any())
-            //    {
-            //        context.Add(new PandaUserRole { Name = "Admin" });
-            //        context.Add(new PandaUserRole { Name = "User" });
-            //        context.SaveChanges();
-            //    }
-            //}
 
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
