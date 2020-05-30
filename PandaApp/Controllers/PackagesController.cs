@@ -23,13 +23,19 @@ namespace PandaApp.Controllers
         public IActionResult Create()
         {
             this.ViewData["Recipients"] = this.context.Users.ToList();
-            return View();
+            return View(new PackageCreateBindingModel());
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public IActionResult Create(PackageCreateBindingModel bindingModel)
         {
+
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(bindingModel ?? new PackageCreateBindingModel());
+            }
+
             Package package = new Package
             {
                 Description = bindingModel.Description,
