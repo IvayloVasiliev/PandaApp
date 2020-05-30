@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Panda.Domain;
 using PandaApp.Data;
@@ -18,7 +19,7 @@ namespace PandaApp.Controllers
             this.context = context;
         }
 
-        // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             this.ViewData["Recipients"] = this.context.Users.ToList();
@@ -26,6 +27,7 @@ namespace PandaApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(PackageCreateBindingModel bindingModel)
         {
             Package package = new Package
@@ -48,6 +50,7 @@ namespace PandaApp.Controllers
 
 
         [HttpGet("Packages/Details/{Id}")]
+        [Authorize]
         public IActionResult Details(string id)
         {
             Package package = this.context.Packages
@@ -82,6 +85,7 @@ namespace PandaApp.Controllers
         }
 
         [HttpGet("Packages/Shipped/{Id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Ship(string id)
         {
             Package package = this.context.Packages.Find(id);
@@ -95,6 +99,7 @@ namespace PandaApp.Controllers
         }
 
         [HttpGet("Packages/Deliver/{Id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Deliver(string id)
         {
             Package package = this.context.Packages.Find(id);
@@ -107,6 +112,7 @@ namespace PandaApp.Controllers
         }
 
         [HttpGet("Packages/Acquire/{Id}")]
+        [Authorize]
         public IActionResult Acquire(string id)
         {
             Package package = this.context.Packages.Find(id);
@@ -129,6 +135,7 @@ namespace PandaApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Pending()
         {
             return this.View(context.Packages
@@ -148,6 +155,7 @@ namespace PandaApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Shipped()
         {
             return this.View(context.Packages
@@ -168,6 +176,7 @@ namespace PandaApp.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delivered()
         {
             return this.View(context.Packages

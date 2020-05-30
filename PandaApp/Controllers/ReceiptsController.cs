@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Panda.Domain;
 using PandaApp.Data;
@@ -18,6 +19,7 @@ namespace PandaApp.Controllers
             this.context = context;
         }
 
+        [Authorize]
         public IActionResult My()
         {
             List<ReceiptMyViewModel> myReceipts = this.context.Receipts
@@ -36,6 +38,7 @@ namespace PandaApp.Controllers
         }
 
         [HttpGet("/Receipts/Details/{id}")]
+        [Authorize]
         public IActionResult Details(string id)
         {
             Receipt receiptFromDb = this.context.Receipts
